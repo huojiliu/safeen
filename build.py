@@ -14,7 +14,6 @@ import textwrap
 import urllib.request
 import tarfile
 
-
 def error(str):
     if no_color:
         print(f'\n! {str}\n')
