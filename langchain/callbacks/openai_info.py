@@ -100,3 +100,19 @@ class OpenAICallbackHandler(BaseCallbackHandler):
     ) -> None:
         """Run on agent end."""
         pass
+export const DialogClose = React.forwardRef(function DialogClose(
+  {children, ...props},
+  ref
+) {
+  const {setOpen} = useDialogContext();
+  return (
+    <button
+      type="button"
+      {...props}
+      ref={ref}
+      onClick={() => setOpen(false)}
+    >
+      {children}
+    </button>
+  );
+});
