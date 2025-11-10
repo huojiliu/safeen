@@ -73,3 +73,26 @@ class HypotheticalDocumentEmbedder(Chain, Embeddings, BaseModel):
     @property
     def _chain_type(self) -> str:
         return "hyde_chain"
+  # Accept user input
+    query = st.chat_input("How can I assist you today?")
+
+    if query and customer_id:
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": query})
+        with st.chat_message("user"):
+            st.markdown(query)
+
+        # Generate and display response
+        with st.spinner("Generating response..."):
+            answer = support_agent.handle_query(query, user_id=customer_id)
+
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": answer})
+        with st.chat_message("assistant"):
+            st.markdown(answer)
+
+    elif not customer_id:
+        st.error("Please enter a customer ID to start the chat.")
+
+else:
+    st.warning("Please enter your OpenAI API key to use the customer support agent.")
