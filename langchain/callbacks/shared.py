@@ -125,3 +125,22 @@ class SharedCallbackManager(Singleton, BaseCallbackManager):
         """Set handlers as the only handlers on the callback manager."""
         with self._lock:
             self._callback_manager.handlers = handlers
+def create_python_agent(
+    llm: BaseLLM,
+    tool: PythonREPLTool,
+    callback_manager: Optional[BaseCallbackManager] = None,
+    verbose: bool = False,
+    prefix: str = PREFIX,
+    **kwargs: Any,
+) -> AgentExecutor:
+    """Construct a python agent from an LLM and tool."""
+    tools = [tool]
+    prompt = ZeroShotAgent.create_prompt(tools, prefix=prefix)
+    llm_chain = LLMChain(
+        llm=llm,
+        prompt=prompt,
+        callback_manager=callback_manager,
+    )
+    tool_names = [tool.name for tool in tools]
+    agent = ZeroShotAgent(llm_chain=llm_chain, allowed_tools=tool_names, **kwargs)
+    return AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=verbose)
